@@ -1,11 +1,7 @@
 package mar2022.servlet2.web.frontcontroller.v2;
 
 import mar2022.servlet2.web.frontcontroller.MyView;
-import mar2022.servlet2.web.frontcontroller.v1.ControllerV1;
-import mar2022.servlet2.web.frontcontroller.v1.controller.MemberFormtControllerV1;
-import mar2022.servlet2.web.frontcontroller.v1.controller.MemberListControllerV1;
-import mar2022.servlet2.web.frontcontroller.v1.controller.MemberSaveControllerV1;
-import mar2022.servlet2.web.frontcontroller.v2.controller.MemberFromControllerV2;
+import mar2022.servlet2.web.frontcontroller.v2.controller.MemberFormControllerV2;
 import mar2022.servlet2.web.frontcontroller.v2.controller.MemberListControllerV2;
 import mar2022.servlet2.web.frontcontroller.v2.controller.MemberSaveControllerV2;
 
@@ -24,7 +20,7 @@ public class FrontControllerServletV2 extends HttpServlet {
     private Map<String, ControllerV2> controllerMap = new HashMap<>();
 
     public FrontControllerServletV2() {
-        controllerMap.put("/front-controller/v2/members/new-from", new MemberFromControllerV2());
+        controllerMap.put("/front-controller/v2/members/new-from", new MemberFormControllerV2());
         controllerMap.put("/front-controller/v2/members/save", new MemberSaveControllerV2());
         controllerMap.put("/front-controller/v2/members", new MemberListControllerV2());
     }
