@@ -1,9 +1,9 @@
-package mar2022.servlet2.web.frontcontroller.v1.controller;
+package mar2022.servlet2.web.frontcontroller.v2.controller;
 
-import lombok.RequiredArgsConstructor;
 import mar2022.servlet2.domain.member.Member;
 import mar2022.servlet2.domain.member.MemberRepository;
-import mar2022.servlet2.web.frontcontroller.v1.ControllerV1;
+import mar2022.servlet2.web.frontcontroller.MyView;
+import mar2022.servlet2.web.frontcontroller.v2.ControllerV2;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class MemberSaveControllerV1 implements ControllerV1 {
+public class MemberSaveControllerV2 implements ControllerV2 {
 
-    private MemberRepository memberRepository;
+    private MemberRepository memberRepository = MemberRepository.getInstance();
 
     @Override
-    public void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public MyView process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
         int age = Integer.parseInt(request.getParameter("age"));
 
@@ -25,8 +25,6 @@ public class MemberSaveControllerV1 implements ControllerV1 {
 
         request.setAttribute("member", member);
 
-        String viewPath = "/WEB-INF/views/save-result.jsp";
-        RequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);
-        dispatcher.forward(request, response);
+        return new MyView("/WEB-INF/views/save-result.jsp");
     }
 }
