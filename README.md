@@ -208,7 +208,8 @@ public class SpringMemberFormControllerV1 {
     public ModelAndView process() {
         return new ModelAndView("new-form");
     }
-}...
+}
+\```
 ```
 > 이러한 컨트롤러 클래스를 총 세 개를 만들어야 한다. (list와 save)
 > 하지만 v2에서는 이러한 컨트롤러 클래스를 하나의 클래스에서 메서드에 ```@RequestMapping```을 통해 관리한다.
