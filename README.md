@@ -170,11 +170,84 @@ public interface MyHandlerAdapter {
 + ```FrontController```가 단지 ```DispatcherServlet```으로 이름만 바뀐 것 뿐, 그 동작 방식과 흐름은 완전히 동일하다.
 
 ### 동작 흐름을 살펴보면,
-1. 핸들러 조회 : 핸들러 매핑을 통해 요청 URL에 매핑된 핸들러(컨트롤러)를 조회한다.
-2. 핸들러 어댑터 조회: 핸들러를 실행할 수 있는 핸들러 어댑터를 조회한다.
-3. 핸들러 어댑터 실행: 핸들러 어댑터를 실행한다.
-4. 핸들러 실행: 핸들러 어댑터가 실제 핸들러를 실행한다.
-5. ModelAndView 반환: 핸들러 어댑터는 핸들러가 반환하는 정보를 ModelAndView로 변환해서 반환한다.
-6. viewResolver 호출: 뷰 리졸버를 찾고 실행한다.
-7. View 반환: 뷰 리졸버는 뷰의 논리이름을 물리이름으로 바꾸고, 렌더링 역할을 담당하는 뷰 객체를 반환한다.
-8. 뷰 렌더링: 뷰를 통해서 뷰를 렌더링 한다.
+>1. 핸들러 조회 : 핸들러 매핑을 통해 요청 URL에 매핑된 핸들러(컨트롤러)를 조회한다.
+>2. 핸들러 어댑터 조회: 핸들러를 실행할 수 있는 핸들러 어댑터를 조회한다.
+>3. 핸들러 어댑터 실행: 핸들러 어댑터를 실행한다.
+>4. 핸들러 실행: 핸들러 어댑터가 실제 핸들러를 실행한다.
+>5. ModelAndView 반환: 핸들러 어댑터는 핸들러가 반환하는 정보를 ModelAndView로 변환해서 반환한다.
+>6. viewResolver 호출: 뷰 리졸버를 찾고 실행한다.
+>7. View 반환: 뷰 리졸버는 뷰의 논리이름을 물리이름으로 바꾸고, 렌더링 역할을 담당하는 뷰 객체를 반환한다.
+>8. 뷰 렌더링: 뷰를 통해서 뷰를 렌더링 한다.
+
++ ### Spring MVC 시작하기
+### ```@RequestMapping``` 기반의 MVC 컨트롤러 구현
+```java
+@Controller
+public class SpringMemberFormControllerV1 {
+    
+    @RequestMapping("/springmvc/v1/members/new-form")
+    public ModelAndView process() {
+    return new ModelAndView("new-form");
+    }
+}
+```
+> ```@Controller```
++ 스프링이 자동으로 스프링 빈으로 등록함. (내부에 ```@Component``` 애노테이션이 있기 때문에 컴포넌트 스캔의 대상이 됨)
++ 스프링 MVC에서 애노테이션 기반 컨트롤러로 인식한다.
+> ```@RequestMapping```
++ 요정 청보를 매핑함. 해당 URL이 호출되면 이 메서드가 호출된다. 애노테이션을 기반으로 동작하기 때문에, 메서드의 이름은 임의로 지으면 됨.
+  
++ ### Spring MVC v1, v2
++ ### V1
+> ```@Controller```와 ```@RequestMapping```을 통한 컨트롤러의 간결화
+```java
+@Controller
+public class SpringMemberFormControllerV1 {
+
+    @RequestMapping("/springmvc/v1/members/new-form")
+    public ModelAndView process() {
+        return new ModelAndView("new-form");
+    }
+}...
+```
+> 이러한 컨트롤러 클래스를 총 세 개를 만들어야 한다. (list와 save)
+> 하지만 v2에서는 이러한 컨트롤러 클래스를 하나의 클래스에서 메서드에 ```@RequestMapping```을 통해 관리한다.
+
++ ### V2
+```java
+@Controller
+@RequestMapping("/springmvc/v2/members")
+public class SpringControllerV2 {
+
+    private MemberRepository memberRepository = MemberRepository.getInstance();
+
+    @RequestMapping("/new-form")
+    public ModelAndView newform() {
+        return new ModelAndView("new-form");
+    }
+
+    @RequestMapping("/save")
+    public ModelAndView save(HttpServletRequest request, HttpServletResponse response) {
+        List<Member> members = memberRepository.findAll();
+        ModelAndView mv = new ModelAndView("members");
+        mv.addObject("members", members);
+
+        return mv;
+    }
+
+    @RequestMapping
+    public ModelAndView members(HttpServletRequest request, HttpServletResponse response) {
+        String username = request.getParameter("username");
+        int age = Integer.parseInt(request.getParameter("age"));
+
+        Member member = new Member(username, age);
+        memberRepository.save(member);
+
+        ModelAndView mv = new ModelAndView("save-result");
+        mv.addObject("member", member);
+        return mv;
+    }
+}
+```
+> 위에서 설명했듯이 하나의 클래스에서 여러 클래스를 관리한다.
+> 클래스 범위에서 ```@RequestMapping```을 선언하면 중복되는 경로를 하나로 뺄 수 있다.
